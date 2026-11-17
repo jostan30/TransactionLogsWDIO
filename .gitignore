@@ -1,0 +1,9 @@
+
+# Test Companion onboarding (local, per-machine)
+.test-companion/
+
+# Dependencies and generated run output
+node_modules/
+log/
+logs/
+performance/
