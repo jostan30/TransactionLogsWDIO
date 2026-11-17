@@ -37,6 +37,25 @@ onboarding, inside the span. The measured time includes WebDriver round-trips
 to the cloud device and the waits in your test, so it is end-to-end
 transaction time, not the app's own render time.
 
+## How the time is measured
+
+The timing uses the standard `performance.now()` call, and it lives in one
+place: `utils/performance.js`.
+
+- `startTimer()` returns `performance.now()`, a high-resolution timestamp in
+  milliseconds.
+- `reportTransaction()` calls `performance.now()` again when the transaction
+  ends and subtracts the start value:
+  `durationMs = performance.now() - startTime`, rounded to two decimals.
+- `durationSec` is `durationMs / 1000`, rounded to two decimals.
+- The clock runs in the Node process on the machine that runs the test, not on
+  the BrowserStack device. That is why the figure includes WebDriver round-trips
+  to the cloud (see Step 1).
+
+Tests never call `performance.now()` themselves. They call `startTimer()` and
+`reportTransaction()` from `utils/performance.js`, so the measurement stays
+identical across every transaction you add.
+
 ## Step 2: Start the timer
 
 ```js
